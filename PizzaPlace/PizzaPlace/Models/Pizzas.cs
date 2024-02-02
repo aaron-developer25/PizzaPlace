@@ -1,8 +1,8 @@
 ﻿namespace PizzaPlace.Models
 {
-    public class Pizza
+    public class Pizzas
     {
-        public Pizza(int Id, string Nombre, decimal Precio, Picante Picante)
+        public Pizzas(int Id, string Nombre, decimal Precio, Picantes Picante)
         {
             this.Id = Id;
             this.Nombre = Nombre;
@@ -12,6 +12,6 @@
         public int Id { get; }
         public string Nombre { get; }
         public decimal Precio { get; }
-        public Picante Picante { get; }
+        public Picantes Picante { get; }
     }
 }

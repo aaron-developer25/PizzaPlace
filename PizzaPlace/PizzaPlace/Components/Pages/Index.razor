@@ -1,0 +1,132 @@
+﻿@page "/pizzaplace"
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
+
+<h1>Men&uacute; de Pizzas</h1>
+
+@foreach (var pizza in estado.Menu.Pizzas)
+{
+    <div class="row">
+        <div class="col">
+            @pizza.Nombre
+        </div>
+        <div class="col text-right">@($"${pizza.Precio:0.00}")</div>
+        <div class="col">
+            <img src="@PicanteImagenes(pizza.Picante)" alt="@pizza.Picante" />
+        </div>
+        <div class="col-1"></div>
+        <div class="col">
+            <button class="btn btn-success pl-4 pr-4 col-4"
+                    @onclick="@(() => AgregarCesta(pizza))">
+                Añadir
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Menu final -->
+<!-- Cesta de compras -->
+@if (estado.Cesta.Pedidos.Any())
+{
+    <h2 class="">Carrito de Compra</h2>
+
+    @foreach (var (pizza, pos) in estado.Cesta.Pedidos.Select((id, pos) => (estado.Menu.GetPizza(id), pos)))
+    {
+        <div class="row mb-2">
+            <div class="col">
+                @pizza?.Nombre
+            </div>
+            <div class="col text-right">
+                @($"${pizza?.Precio:0.00}")
+            </div>
+            <div class="col"></div>
+            <div class="col-1"></div>
+            <div class="col">
+                <button class="btn btn-danger mt-2"
+                        @onclick="@(() => RemoverCesta(pos))">
+                    Remover
+                </button>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col"><hr /></div>
+        <div class="col"></div>
+        <div class="col"> </div>
+        <div class="col"> </div>
+    </div>
+    <div class="row">
+        <div class="col"> Total:</div>
+        <div class="col text-right font-weight-bold">
+            @($"${estado.PrecioTotal:0.00}")
+        </div>
+        <div class="col"> </div>
+        <div class="col"> </div>
+        <div class="col"> </div>
+    </div>
+}
+<!-- Cesta de compras Final -->
+<!--Entrada de cliente -->
+
+<h2>Datos del Cliente</h2>
+
+<EditForm Model="@estado.Cesta.Cliente" OnValidSubmit="RealizarPedido">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset>
+
+        <div class="row mb-2">
+            <label class="col-2" for="nombre">Nombre:</label>
+            <InputText class="form-control col-6" id="nombre" @bind-Value="estado.Cesta.Cliente.Nombre" />
+            <ValidationMessage For="@(() => estado.Cesta.Cliente.Nombre)" />
+        </div>
+        <div class="row mb-2">
+            <label class="col-2" for="calle">Calle:</label>
+            <InputText class="form-control col-6" id="calle" @bind-Value="estado.Cesta.Cliente.Calle" />
+            <ValidationMessage For="@(() => estado.Cesta.Cliente.Calle)" />
+        </div>
+        <div class="row mb-2">
+            <label class="col-2" for="ciudad">Ciudad:</label>
+            <InputText class="form-control col-6" id="ciudad" @bind-Value="estado.Cesta.Cliente.Ciudad" />
+            <ValidationMessage For="@(() => estado.Cesta.Cliente.Ciudad)" />
+        </div>
+        <div class="row mb-2">
+            <button class="mx-auto w-25 btn btn-success">Comprar</button>
+        </div>
+    </fieldset>
+</EditForm>
+<!-- Final de la entrada de cliente -->
+@code {
+
+    private Estados estado { get; set; } = new Estados();
+
+    protected override void OnInitialized()
+    {
+        estado.Menu.Add(new Pizzas(1, "Pepperoni", 8.99M, Picantes.Caliente));
+        estado.Menu.Add(new Pizzas(2, "Margarita", 7.99M, Picantes.Nada));
+        estado.Menu.Add(new Pizzas(3, "Diabolo", 9.99M, Picantes.Picante));
+    }
+
+    private string PicanteImagenes(Picantes picante) => $"{picante.ToString().ToLower()}.png";
+    private void AgregarCesta(Pizzas pizza) => estado.Cesta.Add(pizza.Id);
+    private void RemoverCesta(int pos) => estado.Cesta.RemoveAt(pos);
+
+
+
+    private void RealizarPedido()
+    {
+        if (!string.IsNullOrEmpty(estado.Cesta.Cliente.Calle)
+            && !string.IsNullOrEmpty(estado.Cesta.Cliente.Nombre)
+            && !string.IsNullOrEmpty(estado.Cesta.Cliente.Ciudad))
+        {
+            Console.WriteLine("Pedido Realizado");
+        }
+        else
+        {
+            Console.WriteLine("Complete su pedido antes de comprar...");
+        }
+    }
+
+
+}

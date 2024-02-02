@@ -1,6 +1,6 @@
 ﻿namespace PizzaPlace.Models
 {
-    public enum Picante
+    public enum Picantes
     {
         Nada,
         Picante,

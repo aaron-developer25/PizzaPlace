@@ -4,9 +4,9 @@ namespace PizzaPlace.Services
 {
     public class MenuService
     {
-        public List<Pizza> Pizzas { get; set; } = new List<Pizza>();
-        public void Add(Pizza pizza) => Pizzas.Add(pizza);
-        public Pizza? GetPizza(int id) => Pizzas.SingleOrDefault(pizza => pizza.Id == id);
+        public List<Pizzas> Pizzas { get; set; } = new List<Pizzas>();
+        public void Add(Pizzas pizza) => Pizzas.Add(pizza);
+        public Pizzas? GetPizza(int id) => Pizzas.SingleOrDefault(pizza => pizza.Id == id);
     }
 
 }
